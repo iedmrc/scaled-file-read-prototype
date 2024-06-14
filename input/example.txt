@@ -1,0 +1,5 @@
+http://api.tech.com/item/121345 9
+http://api.tech.com/item/122345 350
+http://api.tech.com/item/123345 25
+http://api.tech.com/item/124345 231
+http://api.tech.com/item/125345 111

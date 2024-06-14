@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Generator, IO
 
-from .models import Record
-from .helpers import Logger, FileReadError
+from models import Record
+from helpers import Logger, FileReadError
 
 logger = Logger().get_logger()
+
 
 class AbstractFileProcessor(ABC):
     """Abstract base class for file processors."""
@@ -35,3 +36,17 @@ class FileProcessor(AbstractFileProcessor):
             except ValueError as e:
                 logger.error(f"Error processing line: {line}")
                 raise FileReadError(f"Error processing line: {line}") from e
+
+
+class ProcessorFactory:
+    """Factory class to create different processors."""
+
+    @staticmethod
+    def create_processor(file_path: str) -> AbstractFileProcessor:
+        """Create a file processor for the given file path."""
+        try:
+            file = open(file_path, 'r')
+            return FileProcessor(file)
+        except IOError as e:
+            logger.error(f"Unable to open file {file_path}")
+            raise FileReadError(f"Unable to open file {file_path}") from e

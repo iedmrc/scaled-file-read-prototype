@@ -1,4 +1,9 @@
 import argparse
+from helpers import Logger, FileReadError
+from file_processors import ProcessorFactory
+from heap_manager import HeapManager
+
+logger = Logger().get_logger()
 
 
 def parse_arguments():
@@ -12,6 +17,26 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
+
+    logger.info("Starting file processing")
+
+    try:
+        processor = ProcessorFactory.create_processor(args.file_path)
+        heap_maintainer = HeapManager(args.top)
+
+        with processor as file_processor:
+            for record in file_processor.read_records():
+                heap_maintainer.add_record(record)
+
+        top_records = heap_maintainer.get_top_records()
+
+        logger.info("Processing completed successfully")
+        for record in top_records:
+            print(record.url)
+
+    except FileReadError as e:
+        logger.error(e)
+        exit(1)
 
 
 if __name__ == "__main__":
