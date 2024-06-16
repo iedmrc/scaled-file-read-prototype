@@ -24,7 +24,7 @@ class Logger(metaclass=SingletonMeta):
         self.logger = logging.getLogger("FileProcessorLogger")
         self.logger.setLevel(getattr(logging, log_level, logging.INFO))
         handler = logging.StreamHandler()
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s','%m-%d %H:%M:%S')
         handler.setFormatter(formatter)
         self.logger.addHandler(handler)
 
