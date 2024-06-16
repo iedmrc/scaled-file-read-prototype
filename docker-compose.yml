@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    build: .
+    image: clickhouse-case
+    volumes:
+      - ./input:/app/input
+    command: ["./input/large_example.txt"]
+    
+
