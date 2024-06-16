@@ -5,6 +5,6 @@ services:
     image: clickhouse-case
     volumes:
       - ./input:/app/input
-    command: ["./input/large_example.txt"]
+    command: ["./input/example.txt"]
     
 
