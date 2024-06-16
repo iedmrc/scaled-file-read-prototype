@@ -1,4 +1,6 @@
 import argparse
+
+from models import Record
 from helpers import Logger, FileReadError
 from file_processors import ProcessorFactory
 from heap_manager import HeapManager
@@ -6,29 +8,44 @@ from heap_manager import HeapManager
 logger = Logger().get_logger()
 
 
-def parse_arguments():
+class FileProcessorService:
+    """Service class to handle file processing."""
+
+    def __init__(self, file_path: str, top: int, chunk_size: int):
+        self.file_path = file_path
+        self.top = top
+        self.chunk_size = chunk_size
+
+    def process_file(self) -> list[Record]:
+        processor = ProcessorFactory.create_processor(self.file_path, self.chunk_size)
+        heap_maintainer = HeapManager(self.top)
+        with processor as file_processor:
+            for record in file_processor.read_records():
+                heap_maintainer.add_record(record)
+        return heap_maintainer.get_top_records()
+
+
+def parse_arguments() -> argparse.Namespace:
+    """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         description="Process a file to find URLs with the largest values.")
     parser.add_argument('file_path', type=str, help='The absolute path of the file to process')
     parser.add_argument('--top', type=int, default=10,
                         help='Number of top records to retrieve (default: 10)')
+    parser.add_argument('--chunk-size', type=int, default=0,
+                        help='Number of lines to read per chunk (default: 0 for single-threaded)')
     return parser.parse_args()
 
 
 def main():
+    """Main function to execute the file processing."""
     args = parse_arguments()
 
     logger.info("Starting file processing")
 
     try:
-        processor = ProcessorFactory.create_processor(args.file_path)
-        heap_maintainer = HeapManager(args.top)
-
-        with processor as file_processor:
-            for record in file_processor.read_records():
-                heap_maintainer.add_record(record)
-
-        top_records = heap_maintainer.get_top_records()
+        service = FileProcessorService(args.file_path, args.top, args.chunk_size)
+        top_records = service.process_file()
 
         logger.info("Processing completed successfully")
         for record in top_records:
