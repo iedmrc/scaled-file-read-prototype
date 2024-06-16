@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Generator, IO
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from models import Record
-from helpers import Logger, FileReadError
+from src.models import Record
+from src.helpers import Logger, FileReadError
 
 logger = Logger().get_logger()
 

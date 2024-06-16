@@ -1,6 +1,6 @@
 import heapq
 
-from models import Record
+from src.models import Record
 
 class HeapManager:
     """Maintains a min-heap to store the top N records."""

@@ -1,9 +1,9 @@
 import argparse
 
-from models import Record
-from helpers import Logger, FileReadError
-from file_processors import ProcessorFactory
-from heap_manager import HeapManager
+from src.models import Record
+from src.helpers import Logger, FileReadError
+from src.file_processors import ProcessorFactory
+from src.heap_manager import HeapManager
 
 logger = Logger().get_logger()
 
